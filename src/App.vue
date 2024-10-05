@@ -1,6 +1,9 @@
 <template>
   <UIHeader></UIHeader>
   <UIButton variant='primary' label='Челты'/>
+  <main>
+    <RouterView />
+  </main>
 </template>
 
 <script setup lang="ts">
