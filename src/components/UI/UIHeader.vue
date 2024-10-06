@@ -28,19 +28,20 @@
               >практика</a
             >
           </li>
-          <li class="menu__item">
-            <a
-              href="#"
-              class="menu__link"
-            >
-              <img
-                class="menu__icon"
-                src="@/assets/icons/profile.svg"
-                alt="profile"
-              />
-            </a>
-          </li>
         </ul>
+        <div class="menu__profile">
+          <a
+            href="#"
+            class="menu__link"
+            @click="handleProfileClick"
+          >
+            <img
+              class="menu__icon"
+              src="@/assets/icons/profile.svg"
+              alt="profile"
+            />
+          </a>
+        </div>
       </nav>
     </div>
   </header>
@@ -56,6 +57,10 @@ const handleTheoryClick = computed(() => {
 
 const handlePracticesClick = computed(() => {
   $router.push({ path: 'practices' });
+});
+
+const handleProfileClick = computed(() => {
+  $router.push({ path: 'profile' });
 });
 </script>
 
@@ -78,14 +83,13 @@ const handlePracticesClick = computed(() => {
   justify-content: space-between;
   align-items: center;
   &__list {
-    margin-left: auto;
+    width: 100%;
     display: flex;
     justify-content: center;
   }
 
   &__item {
-    margin-left: 60px;
-    display: flex;
+    width: 15vw;
   }
 
   &__link {
