@@ -7,10 +7,10 @@
       <nav class="header__menu menu">
         <ul class="menu__list">
           <li class="menu__item">
-            <a href="#" class="menu__link">теория</a>
+            <a href="#" class="menu__link" @click='handleTheoryClick'>теория</a>
           </li>
           <li class="menu__item">
-            <a href="#" class="menu__link">практика</a>
+            <a href="#" class="menu__link" @click='handlePracticesClick'>практика</a>
           </li>
           <li class="menu__item">
             <a href="#" class="menu__link">
@@ -22,6 +22,20 @@
     </div>
   </header>
 </template>
+
+<script setup lang="ts">
+
+import { computed } from 'vue';
+import $router from '@/router/index'
+
+const handleTheoryClick = computed (() => {
+  $router.push({ path: 'theory' });
+})
+
+const handlePracticesClick = computed (() => {
+  $router.push({ path: 'practices' });
+})
+</script>
 
 <style lang="scss" scoped>
   .header {
