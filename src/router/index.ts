@@ -13,32 +13,32 @@ const router = createRouter({
 	routes: [
 		{
 			path: '/',
-			meta: { requiresAuth: false },
+			meta: { requiresAuth: true },
 			component: Index
 		},
 		{
 			path: '/register',
-			meta: { requiresAuth: false },
+			meta: { requiresAuth: true },
 			component: Register
 		},
 		{
 			path: '/auth',
-			meta: { requiresAuth: false },
+			meta: { requiresAuth: true },
 			component: Auth
 		},
 		{
 			path: '/test',
-			meta: { requiresAuth: false },
+			meta: { requiresAuth: true },
 			component: Test
 		},
 		{
 			path: '/sections',
-			meta: { requiresAuth: false },
+			meta: { requiresAuth: true },
 			component: Selections
 		},
 		{
 			path: '/sections/:id',
-			meta: { requiresAuth: false },
+			meta: { requiresAuth: true },
 			component: Selection
 		},
 	]
