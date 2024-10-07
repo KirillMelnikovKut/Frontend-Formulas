@@ -49,18 +49,20 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import $router from '@/router/index';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const handleTheoryClick = computed(() => {
-  $router.push({ path: 'theory' });
+  router.push({ path: '/theory' });
 });
 
 const handlePracticesClick = computed(() => {
-  $router.push({ path: 'practices' });
+  router.push({ path: '/practices' });
 });
 
 const handleProfileClick = computed(() => {
-  $router.push({ path: 'profile' });
+  router.push({ path: '/profile' });
 });
 </script>
 
