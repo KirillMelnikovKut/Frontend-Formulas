@@ -43,21 +43,21 @@ const router = createRouter({
     },
   ],
 });
-router.beforeEach((to, _, next) => {
-  const authenticated = useLocalStorage<boolean>(
-    LOCAL_STORAGE_KEYS['authenticated'],
-    false,
-  );
+// router.beforeEach((to, _, next) => {
+//   const authenticated = useLocalStorage<boolean>(
+//     LOCAL_STORAGE_KEYS['authenticated'],
+//     false,
+//   );
 
-  if (to.name === 'Auth') {
-    authenticated.value = false;
-  }
+//   if (to.name === 'Auth') {
+//     authenticated.value = false;
+//   }
 
-  if (to.meta.requiresAuth && !authenticated.value) {
-    return next('/auth');
-  }
+//   if (to.meta.requiresAuth && !authenticated.value) {
+//     return next('/auth');
+//   }
 
-  return next();
-});
+//   return next();
+// });
 
 export default router;
