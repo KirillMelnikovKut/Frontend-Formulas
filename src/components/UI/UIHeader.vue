@@ -1,46 +1,33 @@
 <template>
   <header class="header">
     <div class="header__container">
-      <a
-        href="#"
-        class="header__logo"
-      >
+      <RouterLink to="/">
         <img
           src="@/assets/icons/logo.svg"
           alt="physics-logo"
         />
-      </a>
+      </RouterLink>
       <nav class="header__menu menu">
         <ul class="menu__list">
           <li class="menu__item">
-            <a
-              href="#"
-              class="menu__link"
-              @click="handleTheoryClick"
-              >теория</a
-            >
+            <RouterLink to="/theory" class="menu__link">
+              Теория
+            </RouterLink>
           </li>
           <li class="menu__item">
-            <a
-              href="#"
-              class="menu__link"
-              @click="handlePracticesClick"
-              >практика</a
-            >
+            <RouterLink to="/test" class="menu__link">
+              Практика
+            </RouterLink>
           </li>
         </ul>
         <div class="menu__profile">
-          <a
-            href="#"
-            class="menu__link"
-            @click="handleProfileClick"
-          >
-            <img
+            <RouterLink to="/" class="menu__link">
+              <img
               class="menu__icon"
               src="@/assets/icons/profile.svg"
               alt="profile"
-            />
-          </a>
+              />
+            </RouterLink>
         </div>
       </nav>
     </div>
@@ -48,20 +35,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+// import { computed } from 'vue';
 import $router from '@/router/index';
 
-const handleTheoryClick = computed(() => {
-  $router.push({ path: 'theory' });
-});
 
-const handlePracticesClick = computed(() => {
-  $router.push({ path: 'practices' });
-});
+// const handleTheoryClick = computed(() => {
+//   console.log()
+//   $router.push({ path: 'theory' });
+// });
 
-const handleProfileClick = computed(() => {
-  $router.push({ path: 'profile' });
-});
+// const handlePracticesClick = computed(() => {
+//   $router.push({ path: 'test' });
+// });
+
+// const handleProfileClick = computed(() => {
+//   $router.push({ path: 'profile' });
+// });
+
+// const handleClick = (e) => {
+//   // console.log(e.target)
+//   $router.replace({ path: e.currentTarget.id });
+// }
 </script>
 
 <style lang="scss" scoped>

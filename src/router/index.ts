@@ -1,7 +1,8 @@
 import Auth from '@/pages/auth.vue';
 import Index from '@/pages/index.vue';
 import Register from '@/pages/register.vue';
-import Test from '@/pages/test.vue';
+import Tests from '@/pages/tests/index.vue'
+import Test from '@/pages/tests/_id.vue';
 import Selections from '@/pages/sections/index.vue';
 import Selection from '@/pages/sections/_id.vue';
 import { LOCAL_STORAGE_KEYS } from '@/utils/constants/localStorage';
@@ -25,9 +26,14 @@ const router = createRouter({
       path: '/auth',
       meta: { requiresAuth: true },
       component: Auth,
-    },
+    },     
     {
       path: '/test',
+      meta: { requiresAuth: true },
+      component: Tests,
+    },
+    {
+      path: '/test/:id',
       meta: { requiresAuth: true },
       component: Test,
     },
