@@ -6,9 +6,14 @@ import Test from '@/pages/tests/_id.vue';
 import Selections from '@/pages/sections/index.vue';
 import Selection from '@/pages/sections/_id.vue';
 import theory from '@/pages/theory.vue';
-import { createRouter, createWebHistory } from 'vue-router';
+import ResultsPage from '@/pages/results/ResultsPage.vue';
+import {
+  createRouter,
+  createWebHistory,
+  type RouteRecordRaw,
+} from 'vue-router';
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     meta: { requiresAuth: true },
@@ -47,6 +52,11 @@ const routes = [
     meta: { requiresAuth: true },
     component: Selection,
   },
+  {
+    path: '/results',
+    meta: { requiresAuth: true },
+    component: ResultsPage,
+  },
 ];
 
 const router = createRouter({
@@ -56,15 +66,15 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authenticated = { value: true };
-  
+
   if (to.meta.requiresAuth && !authenticated.value) {
     return next('/auth');
   }
-  
+
   if (to.path === '/auth' && authenticated.value) {
     return next('/');
   }
-  
+
   next();
 });
 
