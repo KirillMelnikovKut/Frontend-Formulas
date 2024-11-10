@@ -138,6 +138,7 @@
   
   .formula-details {
     padding: 0 15px;
+    font-size: 18px;
   }
   
   .error {
