@@ -1,26 +1,57 @@
 <template>
     <div>
-        <form action="">
+        <form @submit.prevent="handleLogin">
             <p class="title">Авторизация</p>
+            <p v-if="errorMessage" class="errorMsg">{{ errorMessage }}</p>
             <div class="input-container">
                 <span class="icon"><img src="./assets/login.svg" alt=""></span>
-                <input type="text" placeholder="Логин" name="login" />
+                <input type="text" placeholder="Логин" v-model="login" required />
             </div>
             <div class="input-container">
                 <span class="icon"><img src="./assets/password.svg" alt=""></span>
-                <input type="text" placeholder="Пароль" name="pass1" />
+                <input type="password" placeholder="Пароль" v-model="password" required />
             </div>
             <div class="checkbox-container">
                 <input type="checkbox" name="save_pass" id="">
                 <p>Запомнить пароль</p>
             </div>
-            <button>Войти</button>
+            <button type="submit">Войти</button>
             <a href="#">Забыли пароль?</a>
         </form>
     </div>
 </template>
 
-<script></script>
+<script>
+import axios from 'axios';
+
+export default {
+    data() {
+        return {
+            login: '',
+            password: '',
+            errorMessage: ''
+        };
+    },
+    methods: {
+        async handleLogin() {
+            this.errorMessage = '';
+            try {
+                const response = await axios.post('http://formulas.std-2585.ist.mospolytech.ru//user/login', {
+                    login: this.login,
+                    password: this.password
+                });
+
+                if (response.data.success) {
+                    console.log('Авторизация успешна:', response.data);
+                }
+            } catch (error) {
+                this.errorMessage = 'Ошибка авторизации';
+                console.error('Ошибка авторизации:', error);
+            }
+        }
+    }
+}
+</script>
 
 <style scoped>
 form {
@@ -82,5 +113,9 @@ a {
     text-decoration: underline;
     margin-left: 36px;
     font-size: 14px;
+}
+.errorMsg {
+    color: red;
+    margin: 0 0 10px 36px;
 }
 </style>

@@ -1,38 +1,83 @@
 <template>
     <div>
-        <form action="">
+        <form @submit.prevent="handleRegister">
             <p class="title">Регистрация</p>
+            <p v-if="errorMessage" class="errorMsg">{{ errorMessage }}</p>
             <p class="description">Заполните все поля, чтобы создать аккаунт</p>
             <div class="input-container">
                 <span class="icon"><img src="./assets/login.svg" alt=""></span>
-                <input type="text" placeholder="Логин" name="login" />
+                <input type="text" placeholder="Логин" name="login" v-model="login" required />
+            </div>
+            <div class="input-container">
+                <span class="icon"><img src="./assets/login.svg" alt=""></span>
+                <input type="text" placeholder="Никнейм" name="nickname" v-model="nickname" required />
             </div>
             <div class="input-container">
                 <span class="icon"><img src="./assets/password.svg" alt=""></span>
-                <input type="text" placeholder="Пароль" name="pass1" />
+                <input type="password" placeholder="Пароль" name="pass1" v-model="password1" required />
             </div>
             <div class="input-container">
                 <span class="icon"><img src="./assets/password.svg" alt=""></span>
-                <input type="text" placeholder="Повторите пароль" name="pass2" />
+                <input type="password" placeholder="Повторите пароль" name="pass2"  v-model="password2" required/>
             </div>
             <div class="checkbox-container">
                 <input type="checkbox" name="save_pass" id="">
                 <p>Запомнить пароль</p>
             </div>
-            <button>Зарегистрироваться</button>
+            <button type="submit">Зарегистрироваться</button>
             <p class="login-link">Уже зарегистрированы? <a href="#">Войти в систему</a></p>
         </form>
     </div>
 </template>
 
-<script></script>
+<script>
+import axios from 'axios';
+
+export default {
+    data() {
+        return {
+            login: '',
+            password1: '',
+            password2: '',
+            nickname: '',
+            errorMessage: ''
+        };
+    },
+    methods: {
+        validPassword(p1, p2) {
+            return p1 === p2 ? true : false;
+        },
+        async handleRegister() {
+            this.errorMessage = '';
+            try {
+                const valid = this.validPassword(this.password1, this.password2);
+                if (valid) {
+                    const response = await axios.post('http://formulas.std-2585.ist.mospolytech.ru/user/register', {
+                        login: this.login,
+                        password: this.password1,
+                        nickname: this.nickname
+                    });
+                    if (response.data.success) {
+                        console.log('Регистрация успешна:', response.data);
+                    }
+                } else {
+                    this.errorMessage = 'Пароли не совпадают. Попробуйте еще раз.';
+                }
+            } catch (error) {
+                this.errorMessage = 'Ошибка регистрации';
+                console.error('Ошибка регистрации:', error);
+            }
+        }
+    }
+}
+</script>
 
 <style scoped>
 form {
     max-width: 407px;
     width: 100%;
     min-height: 475px;
-    margin: 70px auto 0;
+    margin: 70px auto 50px;
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -94,5 +139,9 @@ button {
 a {
     text-decoration: underline;
     color: #4A6EBA;
+}
+.errorMsg {
+    color: red;
+    margin: 0 0 10px 36px;
 }
 </style>
