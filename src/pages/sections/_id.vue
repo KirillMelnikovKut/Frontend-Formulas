@@ -1,0 +1,3 @@
+<template>
+    Раздел физики
+</template>
