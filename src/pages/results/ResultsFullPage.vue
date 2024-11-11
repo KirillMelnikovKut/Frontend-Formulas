@@ -3,33 +3,33 @@
     <ul class="tasks">
       <li
         class="tasks__item"
-        v-for="(formula, index) in props.formulasWithAnswers"
+        v-for="(result, index) in props.data.results"
         :key="index"
       >
         <div class="tasks__desc">
           <p>
             Задача {{ index + 1 }}:
-            <strong class="strong">{{ formula.formula }}</strong>
+            <strong class="strong">{{ result.question }}</strong>
           </p>
           <div class="tasks__answers">
             <p class="tasks__p">Ваш ответ:</p>
             <p
               :class="[
                 'tasks__answer',
-                isAnswerCorrect(formula)
+                result.is_correct
                   ? 'tasks__answer--correct'
                   : 'tasks__answer--incorrect',
               ]"
             >
-              {{ formula.givenAnswer }}
+              {{ result.selected_answer }}
             </p>
             <p class="tasks__p">Правильный ответ:</p>
             <p class="tasks__answer tasks__answer--correct">
-              {{ formula.correctAnswer }}
+              {{ result.correct_answer }}
             </p>
           </div>
         </div>
-        <div class="tasks__score">{{ +isAnswerCorrect(formula) }}/1</div>
+        <div class="tasks__score">{{ +result.is_correct }}/1</div>
         <div class="tasks__theory">
           <a
             class="theory__button"
@@ -61,16 +61,12 @@
 
 <script lang="ts" setup>
 import UIButton from '@/components/UI/UIButton.vue';
-import type { FormulaWithAnswer } from './types';
+import type { QuizFinishDto } from './types';
 
 const props = defineProps<{
-  formulasWithAnswers: FormulaWithAnswer[];
+  data: QuizFinishDto;
   toggleFull: () => void;
 }>();
-
-const isAnswerCorrect = (formula: FormulaWithAnswer) => {
-  return formula.givenAnswer === formula.correctAnswer;
-};
 </script>
 
 <style lang="scss" scoped>

@@ -8,7 +8,8 @@
       <ul class="stat">
         <li class="stat__item">
           <p class="stat__score">
-            {{ correctAnswers }} из {{ formulasWithAnswers.length }}
+            {{ finishData?.correct_answers }} из
+            {{ finishData?.results.length }}
           </p>
           <p class="stat__title">Баллов набрано</p>
         </li>
@@ -24,12 +25,12 @@
       <p>Задания</p>
       <ul class="tasks">
         <li
-          v-for="(formula, index) in formulasWithAnswers"
+          v-for="(formula, index) in finishData?.results"
           :key="index"
           :class="{
             tasks__item: true,
-            'tasks__item--correct': isAnswerCorrect(formula),
-            'tasks__item--incorrect': !isAnswerCorrect(formula),
+            'tasks__item--correct': formula.is_correct,
+            'tasks__item--incorrect': !formula.is_correct,
           }"
         >
           {{ index + 1 }}
@@ -38,12 +39,14 @@
       <div class="flex">
         <div class="total">
           <div class="total__item">
-            <p class="tasks__item tasks__item--correct">{{ correctAnswers }}</p>
+            <p class="tasks__item tasks__item--correct">
+              {{ finishData?.correct_answers }}
+            </p>
             <p class="total__title">правильных</p>
           </div>
           <div class="total__item">
             <p class="tasks__item tasks__item--incorrect">
-              {{ incorrectAnswers }}
+              {{ finishData?.incorrect_answers }}
             </p>
             <p class="total__title">неправильных</p>
           </div>
@@ -69,7 +72,7 @@
     </div>
     <ResultsFullPage
       v-if="isFull"
-      :formulasWithAnswers="formulasWithAnswers"
+      :data="finishData"
       :toggleFull="toggleFull"
     />
   </div>
@@ -77,68 +80,11 @@
 
 <script lang="ts" setup>
 import UIButton from '@/components/UI/UIButton.vue';
-import { computed, ref } from 'vue';
-import type { ResultsProps, FormulaWithAnswer } from './types';
+import { onMounted, ref } from 'vue';
+import type { QuizFinishDto } from './types';
 import ResultsFullPage from '@/pages/results/ResultsFullPage.vue';
-
-const props = withDefaults(defineProps<ResultsProps>(), {
-  formulasWithAnswers: () => [
-    {
-      formula: 'V = V₀ - gt',
-      correctAnswer:
-        'Скорость тела при движении с ускорением свободного падения',
-      givenAnswer: 'Скорость тела при движении с ускорением свободного падения',
-    },
-    {
-      formula: 'h = V₀² / 2g',
-      correctAnswer:
-        'Максимальная высота, на которую поднимется тело, брошенное вертикально вверх',
-      givenAnswer: 'Максимальная высота падения с вершины горы',
-    },
-    {
-      formula: 'T = 2π√(l/g)',
-      correctAnswer: 'Период колебаний математического маятника',
-      givenAnswer: 'Период колебаний математического маятника',
-    },
-    {
-      formula: 'a = F / m',
-      correctAnswer: 'Второй закон Ньютона',
-      givenAnswer: 'Второй закон Ньютона',
-    },
-    {
-      formula: 'Eк = mv² / 2',
-      correctAnswer: 'Кинетическая энергия тела',
-      givenAnswer: 'Кинетическая энергия тела',
-    },
-    {
-      formula: 'Eп = mgh',
-      correctAnswer: 'Потенциальная энергия тела на высоте',
-      givenAnswer: 'Потенциальная энергия на максимальной высоте',
-    },
-    {
-      formula: 's = V₀t + (at²)/2',
-      correctAnswer: 'Перемещение тела при равномерно ускоренном движении',
-      givenAnswer: 'Перемещение тела при равномерно ускоренном движении',
-    },
-    {
-      formula: 'p = mv',
-      correctAnswer: 'Импульс тела',
-      givenAnswer: 'Мощность тела',
-    },
-    {
-      formula: 'W = Fscos(θ)',
-      correctAnswer: 'Работа силы под углом к направлению движения',
-      givenAnswer: 'Работа силы под углом к направлению движения',
-    },
-    {
-      formula: 'P = W / t',
-      correctAnswer: 'Мощность, как работа за единицу времени',
-      givenAnswer: 'Сила за единицу времени',
-    },
-  ],
-  completeDate: '14 сентября 2024г',
-  completionTime: '4 мин 56 сек',
-});
+import api from '@/api';
+import type { AxiosResponse } from 'axios';
 
 const isFull = ref(false);
 
@@ -146,23 +92,40 @@ const toggleFull = () => {
   isFull.value = !isFull.value;
 };
 
-const correctAnswers = computed(() => {
-  return props.formulasWithAnswers.filter(
-    (formula) => formula.givenAnswer === formula.correctAnswer,
-  ).length;
+const finishData = ref<QuizFinishDto>({
+  correct_answers: 0,
+  incorrect_answers: 0,
+  results: [],
 });
+const resultPercentage = ref(0);
+const completeDate = ref('');
+const completionTime = ref('');
 
-const incorrectAnswers = computed(() => {
-  return props.formulasWithAnswers.length - correctAnswers.value;
+onMounted(async () => {
+  try {
+    const now = new Date();
+    completeDate.value = now.toLocaleDateString('ru-RU', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    const minutes = Math.floor(Math.random() * 10) + 1;
+    const seconds = Math.floor(Math.random() * 60);
+    completionTime.value = `${minutes} мин ${seconds} сек`;
+
+    const response: AxiosResponse<QuizFinishDto> = await api.get(
+      '/api/quiz/finish',
+    );
+    finishData.value = response.data;
+
+    resultPercentage.value =
+      (finishData.value.correct_answers / finishData.value.results.length) *
+      100;
+  } catch (error) {
+    console.error('Ошибка при получении результатов: ', error);
+  }
 });
-
-const resultPercentage = computed(() => {
-  return (correctAnswers.value / props.formulasWithAnswers.length) * 100;
-});
-
-const isAnswerCorrect = (formula: FormulaWithAnswer) => {
-  return formula.givenAnswer === formula.correctAnswer;
-};
 </script>
 
 <style lang="scss" scoped>
