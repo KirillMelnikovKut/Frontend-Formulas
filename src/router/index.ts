@@ -6,6 +6,7 @@ import Test from '@/pages/tests/_id.vue';
 import Selections from '@/pages/sections/index.vue';
 import Selection from '@/pages/sections/_id.vue';
 import theory from '@/pages/theory.vue';
+import theorySection from '@/pages/theorySection.vue';
 import ResultsPage from '@/pages/results/ResultsPage.vue';
 import {
   createRouter,
@@ -23,6 +24,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/theory',
     meta: { requiresAuth: true },
     component: theory,
+  },
+  {
+    path: '/theory/:id',
+    meta: { requiresAuth: true },
+    component: theorySection,
   },
   {
     path: '/register',
