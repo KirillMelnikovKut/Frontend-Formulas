@@ -71,17 +71,18 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const authenticated = { value: true };
+  const isAuthenticated = localStorage.getItem('authenticated') === 'true';
 
-  if (to.meta.requiresAuth && !authenticated.value) {
+  if (to.meta.requiresAuth && !isAuthenticated) {
     return next('/auth');
   }
 
-  if (to.path === '/auth' && authenticated.value) {
+  if (to.path === '/auth' && isAuthenticated) {
     return next('/');
   }
 
   next();
 });
+
 
 export default router;

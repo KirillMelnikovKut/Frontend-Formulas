@@ -35,27 +35,6 @@
 </template>
 
 <script setup lang="ts">
-// import { computed } from 'vue';
-import $router from '@/router/index';
-
-
-// const handleTheoryClick = computed(() => {
-//   console.log()
-//   $router.push({ path: 'theory' });
-// });
-
-// const handlePracticesClick = computed(() => {
-//   $router.push({ path: 'test' });
-// });
-
-// const handleProfileClick = computed(() => {
-//   $router.push({ path: 'profile' });
-// });
-
-// const handleClick = (e) => {
-//   // console.log(e.target)
-//   $router.replace({ path: e.currentTarget.id });
-// }
 </script>
 
 <style lang="scss" scoped>

@@ -48,7 +48,7 @@ export default defineComponent({
           id: 2,
           name: 'Динамика',
           description: 'Раздел формул, связанных с силами и движением',
-          completed: true,
+          completed: false,
         },
         {
           id: 3,
