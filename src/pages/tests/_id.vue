@@ -20,9 +20,10 @@
         <div id="formula" class="formula"/>
         <div v-for="i in questionsPull.length" class="test__options-wrapper">
             <fieldset v-if="i == progress" class="test__options options">
-                <div v-for="n in questionsPull[progress - 1].answersPull.length" class="options__wrapper" v-on:click="selectAnswer($event, n)">
-                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].answersPull[n - 1]"/>
-                    <label :for="i + ' ' + n" class="options__label">{{ questionsPull[progress - 1].answersPull[n - 1] }}</label>
+                <div v-for="n in questionsPull[progress - 1].options.length" class="options__wrapper" v-on:click="selectAnswer($event, n)">
+                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" checked v-if="questionsPull[progress - 1].givenAnswer == n"/>
+                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" v-if="questionsPull[progress - 1].givenAnswer != n"/>
+                    <label :for="i + ' ' + n" class="options__label">{{ questionsPull[progress - 1].options[n - 1] }}</label>
                 </div>
             </fieldset>
         </div>
@@ -30,6 +31,7 @@
         <div class="test__buttons">
             <button class="test__button" @click="decrease">Назад</button>
             <button v-if="progress != questionsPull.length" class="test__button" @click="increase">Вперёд</button>
+            <!-- <RouterLink v-if="progress == questionsPull.length" class="test__button" to="/results">Завершить</RouterLink> -->
             <button v-if="progress == questionsPull.length" class="test__button" @click="sendResults">Завершить</button>
 
         </div>
@@ -37,145 +39,14 @@
 </template>
 
 <script>
-    import katex from 'katex'
+import katex from 'katex'
+import { RouterLink } from 'vue-router';
     export default {
         data() {
             return {
                 progress: 1,
-                questionsPull: [
-                    {
-                        formula: "c = \\pm\\sqrt{a^2 + b^2}",
-                        correctAnswer: 0,
-                        givenAnswer:-1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "f(a,b,c) = (a^2+b^2+c^2)^3",
-                        correctAnswer: 1,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 5.',
-                            'Ответ 6.',
-                            'Ответ 7.',
-                            'Ответ 8.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\sum_{i=1}^\\infty\\frac{1}{n^2}=\\frac{\\pi^2}{6}",
-                        correctAnswer: 2,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\frac{d }{dx}\\in \\overline{B}\\cos30",
-                        correctAnswer: 0,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "\\prod_{\\substack{p\\leq x\\\ }}\\left(1-\\dfrac{1}{p}\\right)",
-                        correctAnswer: 1,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{e^4 + f^4}",
-                        correctAnswer: 2,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{a^2 + b^2}",
-                        correctAnswer: 0,
-                        givenAnswer:-1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{c^3 + d^3}",
-                        correctAnswer: 1,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{e^4 + f^4}",
-                        correctAnswer: 2,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{a^2 + b^2}",
-                        correctAnswer: 0,
-                        givenAnswer:-1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{c^3 + d^3}",
-                        correctAnswer: 1,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    },
-                    {
-                        formula: "c = \\pm\\sqrt{e^4 + f^4}",
-                        correctAnswer: 2,
-                        givenAnswer: -1,
-                        answersPull: [
-                            'Ответ 1.',
-                            'Ответ 2.',
-                            'Ответ 3.',
-                            'Ответ 4.',
-                        ]
-                    }
-                ]
+                questionsPull: [],
+                results: []
             }
         },
         methods: {
@@ -191,18 +62,33 @@
                     this.renderFormula()
                 } 
             },
-            renderFormula() {
-                let katexFormula = katex.renderToString(this.questionsPull[this.progress - 1].formula, {throwOnError: false})
-                let formula = document.getElementById('formula')
-                formula.innerHTML = katexFormula.trim()
-                document.getElementsByClassName('katex-html')[0].remove()
+            // renderFormula() {
+            //     let katexFormula = katex.renderToString(this.questionsPull[this.progress - 1].formula, {throwOnError: false})
+            //     let formula = document.getElementById('formula')
+            //     formula.innerHTML = katexFormula.trim()
+            //     document.getElementsByClassName('katex-html')[0].remove()
 
-                if(this.questionsPull[this.progress - 1].givenAnswer != -1) {
-                    this.$nextTick(() => {
-                        document.getElementById(`${this.progress} ${this.questionsPull[this.progress - 1].givenAnswer}`).checked = true
-                    })
-                }
+            //     if(this.questionsPull[this.progress - 1].givenAnswer != -1) {
+            //         this.$nextTick(() => {
+            //             document.getElementById(`${this.progress} ${this.questionsPull[this.progress - 1].givenAnswer}`).checked = true
+            //         })
+            //     }
+            // },
+            renderFormula() {
+                let formula = document.getElementById('formula')
+                formula.innerHTML = this.questionsPull[this.progress - 1].question
             },
+            async getQuestions() {
+                await fetch(`http://formulas.std-2585.ist.mospolytech.ru/quiz/start/${this.$route.params.id}`).then(resp => {
+                    resp.json().then(res => {
+                        this.questionsPull = res.questions
+                        this.questionsPull.forEach(elem => {
+                            elem.givenAnswer = -1
+                        })
+                        this.renderFormula()
+                    })
+                })
+            },  
             sendAnswers() {
 
             },
@@ -212,16 +98,37 @@
                 this.renderFormula()
             },
             selectAnswer(e, n) {
-                this.questionsPull[this.progress - 1].givenAnswer = n
+                this.questionsPull[this.progress - 1].givenAnswer = this.questionsPull[this.progress - 1].options[n - 1]
             },
-            sendResults() {
+            async sendResults() {
+                let results = []
                 for(let i = 0; i < this.questionsPull.length; i++) {
-                    console.log(this.questionsPull[i].givenAnswer)
+                    results.push(JSON.stringify({
+                        question: this.questionsPull[i].description,
+                        correct_answer: this.questionsPull[i].correct_formula_latex,
+                        selected_answer: this.questionsPull[i].givenAnswer,
+                        is_correct: this.questionsPull[i].givenAnswer == this.questionsPull[i].correct_formula_latex
+                    }))
                 }
+                this.$router.push({
+                    path: '/results',
+                    query: {formulasWithAnswers: results}
+                })
+                // await fetch('http://formulas.std-2585.ist.mospolytech.ru/quiz/submit_answers', {
+                //     method: 'POST',
+                //     headers: {
+                //         'Content-Type': 'application/json'
+                //     },
+                //     answers: results,
+                // }).then(resp => {
+                //     resp.json().then(res => {
+                //         console.log(res)
+                //     })
+                // })
             }
         },
         mounted: function() {
-            this.renderFormula()
+            this.getQuestions()
             this.sendAnswers()
         }
     }
@@ -284,7 +191,7 @@
 .test__progress--current {
     color: #7DA1EF;
     background-color: white;
-    border: 4px solid #7DA1EF;
+    border: 3px solid #7DA1EF;
 }
 
 .test__progress--given {
@@ -295,7 +202,7 @@
 .test__progress--currentGiven {
     color: white;
     background-color: #7DA1EF;
-    border: 4px solid #5d85db;
+    border: 3px solid #4061a8;
 }
 
 #formula {
@@ -303,7 +210,7 @@
     justify-content: center;
     align-items: center;
     color: black;
-    font-size: 3rem;
+    font-size: 2rem;
     font-weight: 900;
     min-height: 140px;
     width: 100%;

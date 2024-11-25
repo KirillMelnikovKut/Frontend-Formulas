@@ -85,8 +85,11 @@ import type { QuizFinishDto } from './types';
 import ResultsFullPage from '@/pages/results/ResultsFullPage.vue';
 import api from '@/api';
 import type { AxiosResponse } from 'axios';
+import { useRoute } from 'vue-router';
 
 const isFull = ref(false);
+
+const route = useRoute()
 
 const toggleFull = () => {
   isFull.value = !isFull.value;
@@ -114,10 +117,18 @@ onMounted(async () => {
     const seconds = Math.floor(Math.random() * 60);
     completionTime.value = `${minutes} мин ${seconds} сек`;
 
-    const response: AxiosResponse<QuizFinishDto> = await api.get(
-      '/api/quiz/finish',
-    );
-    finishData.value = response.data;
+    finishData.value
+
+    const query = route.query
+    const arr = []
+    query.formulasWithAnswers.forEach(element => {
+      arr.push(JSON.parse(element))
+    });
+
+    finishData.value.results = arr;
+    console.log(arr)
+
+
 
     resultPercentage.value =
       (finishData.value.correct_answers / finishData.value.results.length) *
