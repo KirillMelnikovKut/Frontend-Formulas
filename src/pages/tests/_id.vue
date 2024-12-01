@@ -20,10 +20,10 @@
         <div id="formula" class="formula"/>
         <div v-for="i in questionsPull.length" class="test__options-wrapper">
             <fieldset v-if="i == progress" class="test__options options">
-                <div v-for="n in questionsPull[progress - 1].options.length" class="options__wrapper" v-on:click="selectAnswer($event, n)">
+                <div v-for="n in questionsPull[progress - 1].options.length" class="options__wrapper">
                     <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" checked v-if="questionsPull[progress - 1].givenAnswer == n"/>
                     <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" v-if="questionsPull[progress - 1].givenAnswer != n"/>
-                    <label :for="i + ' ' + n" class="options__label">{{ questionsPull[progress - 1].options[n - 1] }}</label>
+                    <label :for="i + ' ' + n" class="options__label" v-on:click="selectAnswer($event, n)">{{ questionsPull[progress - 1].options[n - 1] }}</label>
                 </div>
             </fieldset>
         </div>
@@ -46,7 +46,11 @@ import { RouterLink } from 'vue-router';
             return {
                 progress: 1,
                 questionsPull: [],
-                results: []
+                results: [],
+                startTime: 0,
+                endTime: 0,
+                completionTime: 0,
+                timer: null,
             }
         },
         methods: {
@@ -100,19 +104,33 @@ import { RouterLink } from 'vue-router';
             selectAnswer(e, n) {
                 this.questionsPull[this.progress - 1].givenAnswer = this.questionsPull[this.progress - 1].options[n - 1]
             },
+            startTimer() {
+                this.startTime = Date.now();
+                this.timer = setInterval(() => {
+                }, 1000);
+            },
             async sendResults() {
+                if (this.timer) clearInterval(this.timer); //Остановка таймера
+                this.endTime = Date.now(); //Получаем текущее время
+
+                const elapsedTime = (this.endTime - this.startTime) / 1000; // Высчитываем прошедшее время
+                const minutes = Math.floor(elapsedTime / 60);
+                const seconds = Math.floor(elapsedTime % 60);
+
+                this.completionTime = `${minutes} мин ${seconds} сек`;
+
                 let results = []
                 for(let i = 0; i < this.questionsPull.length; i++) {
                     results.push(JSON.stringify({
                         question: this.questionsPull[i].description,
-                        correct_answer: this.questionsPull[i].correct_formula_latex,
+                        correct_answer: this.questionsPull[i].correct_formula_latex.replace(/^\\\(|\\\)$/g, ""),
                         selected_answer: this.questionsPull[i].givenAnswer,
-                        is_correct: this.questionsPull[i].givenAnswer == this.questionsPull[i].correct_formula_latex
+                        is_correct: this.questionsPull[i].givenAnswer == this.questionsPull[i].correct_formula_latex.replace(/^\\\(|\\\)$/g, ""),
                     }))
                 }
                 this.$router.push({
                     path: '/results',
-                    query: {formulasWithAnswers: results}
+                    query: {formulasWithAnswers: results, completionTime: this.completionTime}
                 })
                 // await fetch('http://formulas.std-2585.ist.mospolytech.ru/quiz/submit_answers', {
                 //     method: 'POST',
@@ -130,6 +148,7 @@ import { RouterLink } from 'vue-router';
         mounted: function() {
             this.getQuestions()
             this.sendAnswers()
+            this.startTimer()
         }
     }
 </script>
@@ -216,7 +235,8 @@ import { RouterLink } from 'vue-router';
     width: 100%;
     border: 4px solid #7DA1EF;
     border-radius: 3px;
-    margin-top: 20px
+    margin-top: 20px;
+    padding: 0 20px;
 }
 
 .test__buttons {
