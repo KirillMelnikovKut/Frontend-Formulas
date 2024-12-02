@@ -18,15 +18,21 @@
             </li>
         </ul>
         <div id="formula" class="formula"/>
-        <div v-for="i in questionsPull.length" class="test__options-wrapper">
-            <fieldset v-if="i == progress" class="test__options options">
-                <div v-for="n in questionsPull[progress - 1].options.length" class="options__wrapper" v-on:click="selectAnswer($event, n)">
-                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" checked v-if="questionsPull[progress - 1].givenAnswer == n"/>
-                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" v-if="questionsPull[progress - 1].givenAnswer != n"/>
-                    <label :for="i + ' ' + n" class="options__label">{{ questionsPull[progress - 1].options[n - 1] }}</label>
-                </div>
-            </fieldset>
-        </div>
+            <div v-for="i in questionsPull.length" class="test__options-wrapper">
+                <fieldset v-if="i == progress" class="test__options options">
+                    <div v-for="(option, index) in questionsPull[progress - 1].options" :key="index" class="options__wrapper">
+                        <input
+                        class="options__radio"
+                        type="radio"
+                        :name="'question' + progress"
+                        :id="progress + ' ' + (index + 1)"
+                        :value="option"
+                        v-model="questionsPull[progress - 1].givenAnswer"
+                        />
+                        <label :for="progress + ' ' + (index + 1)" class="options__label">{{ option }}</label>
+                    </div>
+                </fieldset>
+            </div>
         
         <div class="test__buttons">
             <button class="test__button" @click="decrease">Назад</button>
@@ -46,7 +52,11 @@ import { RouterLink } from 'vue-router';
             return {
                 progress: 1,
                 questionsPull: [],
-                results: []
+                results: [],
+                startTime: 0,
+                endTime: 0,
+                completionTime: 0,
+                timer: null,
             }
         },
         methods: {
@@ -62,18 +72,6 @@ import { RouterLink } from 'vue-router';
                     this.renderFormula()
                 } 
             },
-            // renderFormula() {
-            //     let katexFormula = katex.renderToString(this.questionsPull[this.progress - 1].formula, {throwOnError: false})
-            //     let formula = document.getElementById('formula')
-            //     formula.innerHTML = katexFormula.trim()
-            //     document.getElementsByClassName('katex-html')[0].remove()
-
-            //     if(this.questionsPull[this.progress - 1].givenAnswer != -1) {
-            //         this.$nextTick(() => {
-            //             document.getElementById(`${this.progress} ${this.questionsPull[this.progress - 1].givenAnswer}`).checked = true
-            //         })
-            //     }
-            // },
             renderFormula() {
                 let formula = document.getElementById('formula')
                 formula.innerHTML = this.questionsPull[this.progress - 1].question
@@ -100,19 +98,33 @@ import { RouterLink } from 'vue-router';
             selectAnswer(e, n) {
                 this.questionsPull[this.progress - 1].givenAnswer = this.questionsPull[this.progress - 1].options[n - 1]
             },
+            startTimer() {
+                this.startTime = Date.now();
+                this.timer = setInterval(() => {
+                }, 1000);
+            },
             async sendResults() {
+                if (this.timer) clearInterval(this.timer); //Остановка таймера
+                this.endTime = Date.now(); //Получаем текущее время
+
+                const elapsedTime = (this.endTime - this.startTime) / 1000; // Высчитываем прошедшее время
+                const minutes = Math.floor(elapsedTime / 60);
+                const seconds = Math.floor(elapsedTime % 60);
+
+                this.completionTime = `${minutes} мин ${seconds} сек`;
+
                 let results = []
                 for(let i = 0; i < this.questionsPull.length; i++) {
                     results.push(JSON.stringify({
                         question: this.questionsPull[i].description,
-                        correct_answer: this.questionsPull[i].correct_formula_latex,
+                        correct_answer: this.questionsPull[i].correct_formula_latex.replace(/^\\\(|\\\)$/g, ""),
                         selected_answer: this.questionsPull[i].givenAnswer,
-                        is_correct: this.questionsPull[i].givenAnswer == this.questionsPull[i].correct_formula_latex
+                        is_correct: this.questionsPull[i].givenAnswer == this.questionsPull[i].correct_formula_latex.replace(/^\\\(|\\\)$/g, ""),
                     }))
                 }
                 this.$router.push({
                     path: '/results',
-                    query: {formulasWithAnswers: results}
+                    query: {formulasWithAnswers: results, completionTime: this.completionTime}
                 })
                 // await fetch('http://formulas.std-2585.ist.mospolytech.ru/quiz/submit_answers', {
                 //     method: 'POST',
@@ -130,6 +142,7 @@ import { RouterLink } from 'vue-router';
         mounted: function() {
             this.getQuestions()
             this.sendAnswers()
+            this.startTimer()
         }
     }
 </script>
@@ -216,7 +229,8 @@ import { RouterLink } from 'vue-router';
     width: 100%;
     border: 4px solid #7DA1EF;
     border-radius: 3px;
-    margin-top: 20px
+    margin-top: 20px;
+    padding: 0 20px;
 }
 
 .test__buttons {

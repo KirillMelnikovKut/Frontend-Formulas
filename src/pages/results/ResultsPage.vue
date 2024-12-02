@@ -18,7 +18,7 @@
           <p class="stat__title">Общий результат</p>
         </li>
         <li class="stat__item">
-          <p class="stat__score">{{ completionTime }}</p>
+          <p class="stat__score">{{ $route.query.completionTime }}</p>
           <p class="stat__title">Время прохождения</p>
         </li>
       </ul>
@@ -102,7 +102,6 @@ const finishData = ref<QuizFinishDto>({
 });
 const resultPercentage = ref(0);
 const completeDate = ref('');
-const completionTime = ref('');
 
 onMounted(async () => {
   try {
@@ -111,31 +110,35 @@ onMounted(async () => {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
     });
 
-    const minutes = Math.floor(Math.random() * 10) + 1;
-    const seconds = Math.floor(Math.random() * 60);
-    completionTime.value = `${minutes} мин ${seconds} сек`;
+    const query = route.query;
+    const formulas = Array.isArray(query.formulasWithAnswers)
+  ? query.formulasWithAnswers
+      .filter(item => typeof item === 'string') // Проверка каждый элемент === строка
+      .map(item => JSON.parse(decodeURIComponent(item)))
+  : query.formulasWithAnswers && typeof query.formulasWithAnswers === 'string'
+  ? [JSON.parse(decodeURIComponent(query.formulasWithAnswers))]
+  : [];
 
-    finishData.value
+    const correctAnswers = formulas.filter(f => f.is_correct).length;
+    const incorrectAnswers = formulas.length - correctAnswers;
 
-    const query = route.query
-    const arr = []
-    query.formulasWithAnswers.forEach(element => {
-      arr.push(JSON.parse(element))
-    });
-
-    finishData.value.results = arr;
-    console.log(arr)
-
-
+    finishData.value = {
+      correct_answers: correctAnswers,
+      incorrect_answers: incorrectAnswers,
+      results: formulas,
+    };
 
     resultPercentage.value =
-      (finishData.value.correct_answers / finishData.value.results.length) *
-      100;
+      Math.ceil((finishData.value.correct_answers / finishData.value.results.length) *
+      100);
   } catch (error) {
     console.error('Ошибка при получении результатов: ', error);
   }
+  
 });
 </script>
 
