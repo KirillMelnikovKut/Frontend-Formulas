@@ -18,15 +18,21 @@
             </li>
         </ul>
         <div id="formula" class="formula"/>
-        <div v-for="i in questionsPull.length" class="test__options-wrapper">
-            <fieldset v-if="i == progress" class="test__options options">
-                <div v-for="n in questionsPull[progress - 1].options.length" class="options__wrapper">
-                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" checked v-if="questionsPull[progress - 1].givenAnswer == n"/>
-                    <input class="options__radio" type="radio" name="pull" :id="i + ' ' + n" :value="questionsPull[progress - 1].options[n - 1]" v-if="questionsPull[progress - 1].givenAnswer != n"/>
-                    <label :for="i + ' ' + n" class="options__label" v-on:click="selectAnswer($event, n)">{{ questionsPull[progress - 1].options[n - 1] }}</label>
-                </div>
-            </fieldset>
-        </div>
+            <div v-for="i in questionsPull.length" class="test__options-wrapper">
+                <fieldset v-if="i == progress" class="test__options options">
+                    <div v-for="(option, index) in questionsPull[progress - 1].options" :key="index" class="options__wrapper">
+                        <input
+                        class="options__radio"
+                        type="radio"
+                        :name="'question' + progress"
+                        :id="progress + ' ' + (index + 1)"
+                        :value="option"
+                        v-model="questionsPull[progress - 1].givenAnswer"
+                        />
+                        <label :for="progress + ' ' + (index + 1)" class="options__label">{{ option }}</label>
+                    </div>
+                </fieldset>
+            </div>
         
         <div class="test__buttons">
             <button class="test__button" @click="decrease">Назад</button>
@@ -66,18 +72,6 @@ import { RouterLink } from 'vue-router';
                     this.renderFormula()
                 } 
             },
-            // renderFormula() {
-            //     let katexFormula = katex.renderToString(this.questionsPull[this.progress - 1].formula, {throwOnError: false})
-            //     let formula = document.getElementById('formula')
-            //     formula.innerHTML = katexFormula.trim()
-            //     document.getElementsByClassName('katex-html')[0].remove()
-
-            //     if(this.questionsPull[this.progress - 1].givenAnswer != -1) {
-            //         this.$nextTick(() => {
-            //             document.getElementById(`${this.progress} ${this.questionsPull[this.progress - 1].givenAnswer}`).checked = true
-            //         })
-            //     }
-            // },
             renderFormula() {
                 let formula = document.getElementById('formula')
                 formula.innerHTML = this.questionsPull[this.progress - 1].question
