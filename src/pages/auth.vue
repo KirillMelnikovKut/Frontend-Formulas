@@ -39,7 +39,7 @@ const handleLogin = async () => {
       password: password.value
     });
     localStorage.setItem('authenticated', 'true');
-    await router.push('/');
+    router.push('/');
   } catch (error) {
     errorMessage.value = 'Неверный логин или пароль!';
     console.error('Ошибка авторизации:', error);

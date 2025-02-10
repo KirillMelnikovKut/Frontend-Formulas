@@ -13,6 +13,8 @@ import {
   createWebHistory,
   type RouteRecordRaw,
 } from 'vue-router';
+import {LOCAL_STORAGE_KEYS} from "@/utils/constants/localStorage";
+import {useLocalStorage} from "@vueuse/core";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -71,17 +73,20 @@ const router = createRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = localStorage.getItem('authenticated') === 'true';
+  const authenticated = useLocalStorage<boolean>(
+      LOCAL_STORAGE_KEYS['authenticated'],
+      false,
+  );
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
+  if (to.name === 'Auth') {
+    authenticated.value = false;
+  }
+
+  if (to.meta.requiresAuth && !authenticated.value) {
     return next('/auth');
   }
 
-  if (to.path === '/auth' && isAuthenticated) {
-    return next('/');
-  }
-
-  next();
+  return next();
 });
 
 
