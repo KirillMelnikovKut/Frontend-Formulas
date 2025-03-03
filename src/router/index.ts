@@ -3,6 +3,7 @@ import Index from '@/pages/index.vue';
 import Register from '@/pages/register.vue';
 import Tests from '@/pages/tests/index.vue';
 import Test from '@/pages/tests/_id.vue';
+import NewTest from '@/pages/new-test/_id.vue';
 import Selections from '@/pages/sections/index.vue';
 import Selection from '@/pages/sections/_id.vue';
 import theory from '@/pages/theory.vue';
@@ -49,6 +50,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/test/:id',
     meta: { requiresAuth: true },
     component: Test,
+  },
+  {
+    path: '/new-test/:id',
+    meta: { requiresAuth: true },
+    component: NewTest,
   },
   {
     path: '/sections',
