@@ -15,20 +15,26 @@
         <div id="formula" class="formula"/>
         <div class="test__formula">
         <div class="symbols">
-            <img src="@/assets/symbols/velocity_outline.svg" alt="скорость" class="symbol">
-            <img src="@/assets/symbols/equality_outline.svg" alt="знак равно" class="symbol">
+            <img
+                v-for="(item, index) in formula"
+                :key="index"
+                :src="item.src"
+                :alt="item.name"
+                class="symbol"
+                @click="removeFormula(index)"
+            >
         </div>
         </div>
 
         <div class="symbols">
-            <img src="@/assets/symbols/equality.svg" alt="равно" class="symbol">
-            <img src="@/assets/symbols/initial_velocity.svg" alt="начальная скорость" class="symbol">
-            <img src="@/assets/symbols/g.svg" alt="ускорение свободного падения" class="symbol">
-            <img src="@/assets/symbols/s.svg" alt="расстояние" class="symbol">
-            <img src="@/assets/symbols/t.svg" alt="время" class="symbol">
-            <img src="@/assets/symbols/division.svg" alt="деление" class="symbol">
-            <img src="@/assets/symbols/degree.svg" alt="степень" class="symbol">
-            <img src="@/assets/symbols/square_root.svg" alt="квадратный корень" class="symbol">
+            <img
+                v-for="(item, index) in options"
+                :key="index"
+                :src="item.src"
+                :alt="item.name"
+                class="symbol"
+                @click="addFormula(item)"
+            >
         </div>
 
         <!-- <div v-for="i in questionsPull.length" class="test__options-wrapper">
@@ -70,9 +76,30 @@ import { RouterLink } from 'vue-router';
                 endTime: 0,
                 completionTime: 0,
                 timer: null,
+
+                formula: [
+                    { src: '/images/symbols/velocity_outline.svg', name: 'скорость' },
+                    { src: '/images/symbols/equality_outline.svg', name: 'знак равно' },
+                ],
+                options: [
+                    { src: '/images/symbols/equality.svg', name: 'равно' },
+                    { src: '/images/symbols/initial_velocity.svg', name: 'начальная скорость' },
+                    { src: '/images/symbols/g.svg', name: 'ускорение свободного падения' },
+                    { src: '/images/symbols/s.svg', name: 'расстояние' },
+                    { src: '/images/symbols/t.svg', name: 'время' },
+                    { src: '/images/symbols/division.svg', name: 'деление' },
+                    { src: '/images/symbols/degree.svg', name: 'степень' },
+                    { src: '/images/symbols/square_root.svg', name: 'квадратный корень' },
+                ],
             }
         },
         methods: {
+            addFormula(symbol) {
+                this.formula.push(symbol);
+            },
+            removeFormula(index) {
+                if (index > 1) this.formula.splice(index, 1);
+            },
             increase() {
                 if (this.progress < this.questionsPull.length) {
                     this.progress += 1
@@ -168,7 +195,7 @@ import { RouterLink } from 'vue-router';
     align-items: center;
     flex-direction: column;
     width: 746px;
-    margin: 0 auto;
+    margin: 89px auto;
 }
 
 .test__progress-wrapper {
@@ -188,7 +215,6 @@ import { RouterLink } from 'vue-router';
     line-height: 29.4px;
     letter-spacing: 0%;
     text-align: center;
-    margin-top: 89px;
     color: #868686;
 }
 
@@ -242,7 +268,7 @@ import { RouterLink } from 'vue-router';
 .test__formula {
     display: flex;
     width: 736px;
-    height: 128px;
+    min-height: 128px;
     top: 400px;
     left: 592px;
     border-bottom: 4px solid #C1C1C1;
@@ -251,17 +277,17 @@ import { RouterLink } from 'vue-router';
 .symbols {
     display: flex;
     width: 736px;
-    height: 160px;
     top: 560px;
     left: 592px;
     gap: 32px;
-    margin-top: 32px;
+    margin: 32px 0;
     gap: 32px;
     flex-wrap: wrap;
 }
 
 .symbol {
     height: 64px;
+    cursor: pointer;
 }
 
 .test__buttons {
