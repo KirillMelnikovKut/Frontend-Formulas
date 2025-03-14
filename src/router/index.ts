@@ -9,13 +9,14 @@ import Selection from '@/pages/sections/_id.vue';
 import theory from '@/pages/theory.vue';
 import theorySection from '@/pages/theorySection.vue';
 import ResultsPage from '@/pages/results/ResultsPage.vue';
+import VideoPage from '@/pages/video/VideoPage.vue';
 import {
   createRouter,
   createWebHistory,
   type RouteRecordRaw,
 } from 'vue-router';
-import {LOCAL_STORAGE_KEYS} from "@/utils/constants/localStorage";
-import {useLocalStorage} from "@vueuse/core";
+import { LOCAL_STORAGE_KEYS } from '@/utils/constants/localStorage';
+import { useLocalStorage } from '@vueuse/core';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -71,6 +72,11 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
     component: ResultsPage,
   },
+  {
+    path: '/video',
+    meta: { requiresAuth: true },
+    component: VideoPage,
+  },
 ];
 
 const router = createRouter({
@@ -80,8 +86,8 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
   const authenticated = useLocalStorage<boolean>(
-      LOCAL_STORAGE_KEYS['authenticated'],
-      false,
+    LOCAL_STORAGE_KEYS['authenticated'],
+    false,
   );
 
   if (to.name === 'Auth') {
@@ -94,6 +100,5 @@ router.beforeEach((to, from, next) => {
 
   return next();
 });
-
 
 export default router;
