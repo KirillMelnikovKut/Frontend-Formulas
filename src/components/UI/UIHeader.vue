@@ -19,6 +19,11 @@
               Практика
             </RouterLink>
           </li>
+          <li class="menu__item">
+            <RouterLink to="/video" class="menu__link">
+              Видеолекции
+            </RouterLink>
+          </li>
         </ul>
         <div class="menu__profile">
             <RouterLink to="/" class="menu__link">

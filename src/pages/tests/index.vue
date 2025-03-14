@@ -14,6 +14,11 @@
                     2
                 </RouterLink>
             </li>
+          <li class="test__item">
+            <RouterLink to="/new-test/1" class="test__link">
+              3
+            </RouterLink>
+          </li>
         </ul>
     </div>
 </template>
@@ -51,3 +56,5 @@
 
 
 </style>
+<script setup lang="ts">
+</script>
