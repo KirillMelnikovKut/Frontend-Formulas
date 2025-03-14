@@ -10,6 +10,7 @@ import theory from '@/pages/theory.vue';
 import theorySection from '@/pages/theorySection.vue';
 import ResultsPage from '@/pages/results/ResultsPage.vue';
 import VideoPage from '@/pages/video/VideoPage.vue';
+import Intro from '@/pages/intro/intro.vue';
 import UserProfilePage from '@/pages/UserProfilePage.vue';
 import {
   createRouter,
@@ -24,6 +25,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/',
     meta: { requiresAuth: true },
     component: Index,
+  },
+  {
+    path: '/intro',
+    meta: { requiresAuth: true },
+    component: Intro,
   },
   {
     path: '/theory',

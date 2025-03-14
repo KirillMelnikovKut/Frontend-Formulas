@@ -58,7 +58,7 @@ const handleRegister = async () => {
         nickname: nickname.value
       });
       localStorage.setItem('authenticated', 'true');
-      await router.push('/');
+      await router.push('/intro');
     } catch (error) {
       errorMessage.value = 'Ошибка регистрации';
       console.error('Ошибка регистрации:', error);
