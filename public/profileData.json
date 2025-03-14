@@ -1,0 +1,17 @@
+{
+  "user": {
+    "name": "Иван Иванов",
+    "status": "Смешарик",
+    "avatar": "/src/assets/avatar-placeholder.png"
+  },
+  "tests": {
+    "date": "28.09.2024",
+    "success_rate": 70,
+    "section": "кинематика"
+  },
+  "topics": {
+    "name": "кинематика",
+    "tests_passed": 17,
+    "success_rate": 52
+  }
+}

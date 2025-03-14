@@ -26,7 +26,7 @@
           </li>
         </ul>
         <div class="menu__profile">
-            <RouterLink to="/" class="menu__link">
+            <RouterLink to="/profile" class="menu__link">
               <img
               class="menu__icon"
               src="@/assets/icons/profile.svg"

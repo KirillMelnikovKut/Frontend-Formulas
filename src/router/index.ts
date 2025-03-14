@@ -10,6 +10,7 @@ import theory from '@/pages/theory.vue';
 import theorySection from '@/pages/theorySection.vue';
 import ResultsPage from '@/pages/results/ResultsPage.vue';
 import VideoPage from '@/pages/video/VideoPage.vue';
+import UserProfilePage from '@/pages/UserProfilePage.vue';
 import {
   createRouter,
   createWebHistory,
@@ -76,6 +77,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/video',
     meta: { requiresAuth: true },
     component: VideoPage,
+  },
+  {
+    path: '/profile',
+    meta: { requiresAuth: true },
+    component: UserProfilePage,
   },
 ];
 
