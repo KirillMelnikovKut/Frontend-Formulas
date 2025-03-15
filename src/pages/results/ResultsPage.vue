@@ -25,9 +25,9 @@
       <p>Задания</p>
       <ul class="tasks">
         <li
-          v-for="(formula, index) in finishData?.results"
-          :key="index"
-          :class="{
+            v-for="(formula, index) in finishData?.results"
+            :key="index"
+            :class="{
             tasks__item: true,
             'tasks__item--correct': formula.is_correct,
             'tasks__item--incorrect': !formula.is_correct,
@@ -52,40 +52,40 @@
           </div>
         </div>
         <button
-          @click="toggleFull"
-          class="full"
+            @click="toggleFull"
+            class="full"
         >
           <img
-            src="@/assets/icons/resize.svg"
-            alt="развернуть-иконка"
+              src="@/assets/icons/resize.svg"
+              alt="развернуть-иконка"
           />
           <p class="full__title">Развернуть все</p>
         </button>
       </div>
       <div class="buttons">
         <UIButton
-          class="buttons__again"
-          label="Пройти снова"
-          href="/test/1"
+            class="buttons__again"
+            label="Пройти снова"
+            href="/test/1"
         />
       </div>
     </div>
     <ResultsFullPage
-      v-if="isFull"
-      :data="finishData"
-      :toggleFull="toggleFull"
+        v-if="isFull"
+        :data="finishData"
+        :toggleFull="toggleFull"
     />
   </div>
 </template>
 
 <script lang="ts" setup>
 import UIButton from '@/components/UI/UIButton.vue';
-import { onMounted, ref } from 'vue';
-import type { QuizFinishDto } from './types';
+import {onMounted, ref} from 'vue';
+import type {QuizFinishDto} from './types';
 import ResultsFullPage from '@/pages/results/ResultsFullPage.vue';
 import api from '@/api';
-import type { AxiosResponse } from 'axios';
-import { useRoute } from 'vue-router';
+import type {AxiosResponse} from 'axios';
+import {useRoute} from 'vue-router';
 
 const isFull = ref(false);
 
@@ -116,12 +116,12 @@ onMounted(async () => {
 
     const query = route.query;
     const formulas = Array.isArray(query.formulasWithAnswers)
-  ? query.formulasWithAnswers
-      .filter(item => typeof item === 'string') // Проверка каждый элемент === строка
-      .map(item => JSON.parse(decodeURIComponent(item)))
-  : query.formulasWithAnswers && typeof query.formulasWithAnswers === 'string'
-  ? [JSON.parse(decodeURIComponent(query.formulasWithAnswers))]
-  : [];
+        ? query.formulasWithAnswers
+            .filter(item => typeof item === 'string')
+            .map(item => item ? JSON.parse(decodeURIComponent(item)) : null)
+        : query.formulasWithAnswers && typeof query.formulasWithAnswers === 'string'
+            ? [JSON.parse(decodeURIComponent(query.formulasWithAnswers))]
+            : [];
 
     const correctAnswers = formulas.filter(f => f.is_correct).length;
     const incorrectAnswers = formulas.length - correctAnswers;
@@ -133,12 +133,12 @@ onMounted(async () => {
     };
 
     resultPercentage.value =
-      Math.ceil((finishData.value.correct_answers / finishData.value.results.length) *
-      100);
+        Math.ceil((finishData.value.correct_answers / finishData.value.results.length) *
+            100);
   } catch (error) {
     console.error('Ошибка при получении результатов: ', error);
   }
-  
+
 });
 </script>
 
@@ -255,6 +255,7 @@ $fz--tiny: 20px;
   &__title {
     font-size: $fz--tiny;
   }
+
   &:hover {
     transform: scale(1.1);
   }

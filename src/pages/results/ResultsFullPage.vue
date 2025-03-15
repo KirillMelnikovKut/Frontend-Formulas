@@ -2,9 +2,9 @@
   <div>
     <ul class="tasks">
       <li
-        class="tasks__item"
-        v-for="(result, index) in props.data.results"
-        :key="index"
+          class="tasks__item"
+          v-for="(result, index) in props.data.results"
+          :key="index"
       >
         <div class="tasks__desc">
           <p>
@@ -14,52 +14,50 @@
           <div class="tasks__answers">
             <p class="tasks__p">Ваш ответ:</p>
             <p
-              :class="[
+                :class="[
                 'tasks__answer',
-                result.is_correct
+                Boolean(result.is_correct)
                   ? 'tasks__answer--correct'
                   : 'tasks__answer--incorrect',
               ]"
             >
-              {{ result.selected_answer }}
+              {{ result.selected_answer || "—" }}
             </p>
             <p class="tasks__p">Правильный ответ:</p>
             <p class="tasks__answer tasks__answer--correct">
-              {{ result.correct_answer }}
+              {{ result.correct_answer || "—" }}
             </p>
           </div>
         </div>
-        <div class="tasks__score">{{ +result.is_correct }}/1</div>
+        <div class="tasks__score">{{ Boolean(result.is_correct) ? 1 : 0 }}/1</div>
         <div class="tasks__theory">
-          <a
-            class="theory__button"
-            href="/theory"
-          >
+          <RouterLink class="theory__button" to="/theory">
             <p class="theory__p">Вернуться к теории</p>
             <div class="gradient-rectangle">
               <div class="circle"></div>
             </div>
-          </a>
+          </RouterLink>
         </div>
       </li>
     </ul>
 
     <div class="buttons">
       <UIButton
-        class="buttons__item"
-        @click="toggleFull"
-        label="Назад"
+          class="buttons__item"
+          @click="props.toggleFull"
+          label="Назад"
       />
       <UIButton
-        class="buttons__item"
-        label="На главную"
-        href="/"
+          class="buttons__item"
+          label="На главную"
+          href="/"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
+import { RouterLink } from 'vue-router';
 import UIButton from '@/components/UI/UIButton.vue';
 import type { QuizFinishDto } from './types';
 
@@ -68,6 +66,7 @@ const props = defineProps<{
   toggleFull: () => void;
 }>();
 </script>
+
 
 <style lang="scss" scoped>
 $correct-color: #55b432;

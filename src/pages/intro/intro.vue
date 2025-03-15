@@ -1,5 +1,6 @@
 <template>
   <div class="quiz-container">
+    <!-- Номера вопросов -->
     <div class="numbers">
       <span
           v-for="(question, index) in questions"
@@ -11,6 +12,7 @@
       </span>
     </div>
 
+    <!-- Текущий вопрос -->
     <h2>{{ questions[currentQuestion].text }}</h2>
     <div class="options-container">
       <div
@@ -25,14 +27,21 @@
       </div>
     </div>
 
+    <!-- Кнопки -->
     <div class="buttons" v-if="!testCompleted">
-      <UIButton label="Назад"  v-if="currentQuestion > 0" @click="prevQuestion" />
-      <UIButton :label="testCompleted ? 'Вперёд' : allAnswered ? 'Завершить' : 'Вперёд'" @click="nextQuestion" label="Назад" />
+      <UIButton label="Назад" v-if="currentQuestion > 0" @click="prevQuestion" class="back" />
+      <UIButton
+          :label="allAnswered ? 'Завершить' : 'Вперёд'"
+          @click="nextQuestion"
+          class="next"
+      />
     </div>
 
+    <!-- Результат -->
     <div v-if="testCompleted" class="result">
       Ваш результат: {{ score }}/10 - {{ level }}
-      <UIButton to='/theory' label="Перейти к теории" />
+      <UIButton to="/theory" label="Перейти к теории" />
+      <UIButton label="Пройти заново" @click="restartTest" />
     </div>
   </div>
 </template>
@@ -41,7 +50,7 @@
 import UIButton from "@/components/UI/UIButton.vue";
 
 export default {
-  components: {UIButton},
+  components: { UIButton },
   data() {
     return {
       questions: [
@@ -91,29 +100,21 @@ export default {
       if (this.currentQuestion > 0) {
         this.currentQuestion--;
       }
+    },
+    restartTest() {
+      this.currentQuestion = 0;
+      this.answers = new Array(10).fill(null);
+      this.testCompleted = false;
     }
   }
 };
 </script>
 
 <style scoped>
-nav {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 30px;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-  font-size: 16px;
-}
-
 .quiz-container {
   background: white;
   width: 50%;
+  max-width: 600px;
   margin: 50px auto;
   padding: 30px;
   border-radius: 10px;
@@ -133,6 +134,7 @@ nav a {
   background: #ddd;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .numbers .active {
@@ -144,11 +146,13 @@ nav a {
   background: #b0b0b0;
   color: white;
 }
+
 h2 {
   font-weight: 600;
   line-height: 40px;
   font-size: 22px;
 }
+
 .option {
   display: flex;
   align-items: center;
@@ -157,7 +161,7 @@ h2 {
   margin: 5px 0;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 18px;
+  font-size: 16px;
   transition: background 0.3s;
 }
 
@@ -173,7 +177,6 @@ h2 {
   background: #f5a6a6;
 }
 
-/* Кнопки */
 .buttons {
   margin-top: 20px;
   display: flex;
@@ -199,4 +202,12 @@ button {
   color: white;
 }
 
+.result {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.result button {
+  margin-top: 10px;
+}
 </style>

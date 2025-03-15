@@ -11,7 +11,6 @@ import theorySection from '@/pages/theorySection.vue';
 import ResultsPage from '@/pages/results/ResultsPage.vue';
 import VideoPage from '@/pages/video/VideoPage.vue';
 import Intro from '@/pages/intro/intro.vue';
-import UserProfilePage from '@/pages/UserProfilePage.vue';
 import {
   createRouter,
   createWebHistory,
@@ -19,6 +18,7 @@ import {
 } from 'vue-router';
 import { LOCAL_STORAGE_KEYS } from '@/utils/constants/localStorage';
 import { useLocalStorage } from '@vueuse/core';
+import UserProfilePage from "@/pages/UserProfilePage.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
