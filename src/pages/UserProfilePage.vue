@@ -1,53 +1,100 @@
-<script setup>
-import profileData from "/public/profileData.json";
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import api from "@/api/index";
+
+interface User {
+  avatar: string;
+  name: string;
+  status: string;
+}
+
+interface Test {
+  date: string;
+  success_rate: number;
+  section: string;
+}
+
+interface Topic {
+  name: string;
+  tests_passed: number;
+  success_rate: number;
+}
+
+interface ProfileData {
+  user: User;
+  tests: Test;
+  topics: Topic;
+}
+
+const profileData = ref<ProfileData>();
+const isLoading = ref(true);
+const errorMessage = ref('');
+
+onMounted(async () => {
+  try {
+    const response = await api.get('/user/profile');
+    profileData.value = response.data;
+  } catch (error) {
+    errorMessage.value = 'Ошибка при загрузке данных профиля';
+    console.error('Ошибка:', error);
+  } finally {
+    isLoading.value = false;
+  }
+});
 </script>
 
 
 <template>
   <div class="profile-page">
-    <div class="profile-header">
-      <img :src="profileData.user.avatar" alt="Avatar" class="avatar" />
-      <div class="user-info">
-        <h1>{{ profileData.user.name }}</h1>
-        <p class="status">СТАТУС: <span class="novice">{{ profileData.user.status }}</span></p>
-      </div>
-    </div>
+    <div v-if="isLoading" class="loading">Загрузка...</div>
 
-    <div class="content">
-      <div class="card">
-        <h2>ПРОЙДЕННЫЕ ТЕСТЫ</h2>
-        <div class="card-inner">
-          <div class="card-content">
-            <div class="left">
-              <p>Дата создания: {{ profileData.tests.date }}</p>
-              <p>- Процент выполнения: <span class="success">{{ profileData.tests.success_rate }}%</span></p>
-              <p>- Раздел: {{ profileData.tests.section }}</p>
-            </div>
-            <div class="right">
-              <p>Знания в теме</p>
-              <p class="arrow-up">⬆</p>
-              <p class="success">повышены</p>
+    <div v-else-if="errorMessage" class="error">{{ errorMessage }}</div>
+
+    <div v-else>
+      <div class="profile-header">
+        <img :src="profileData?.user.avatar" alt="Avatar" class="avatar" />
+        <div class="user-info">
+          <h1>{{ profileData?.user.name }}</h1>
+          <p class="status">СТАТУС: <span class="novice">{{ profileData?.user.status }}</span></p>
+        </div>
+      </div>
+      
+      <div class="content">
+        <div class="card">
+          <h2>ПРОЙДЕННЫЕ ТЕСТЫ</h2>
+          <div class="card-inner">
+            <div class="card-content">
+              <div class="left">
+                <p>Дата создания: {{ profileData?.tests.date }}</p>
+                <p>- Процент выполнения: <span class="success">{{ profileData?.tests.success_rate }}%</span></p>
+                <p>- Раздел: {{ profileData?.tests.section }}</p>
+              </div>
+              <div class="right">
+                <p>Знания в теме</p>
+                <p class="arrow-up">⬆</p>
+                <p class="success">повышены</p>
+              </div>
             </div>
           </div>
+          <button class="expand-btn">развернуть</button>
         </div>
-        <button class="expand-btn">развернуть</button>
-      </div>
-
-      <div class="card">
-        <h2>ТЕМЫ</h2>
-        <div class="card-inner">
-          <div class="card-content">
-            <div class="left">
-              <p>{{ profileData.topics.name }}</p>
-              <p>- Тестов пройдено: {{ profileData.topics.tests_passed }}</p>
-            </div>
-            <div class="right">
-              <p>Процент успешного выполнения</p>
-              <p class="failure">{{ profileData.topics.success_rate }}%</p>
+        
+        <div class="card">
+          <h2>ТЕМЫ</h2>
+          <div class="card-inner">
+            <div class="card-content">
+              <div class="left">
+                <p>{{ profileData?.topics.name }}</p>
+                <p>- Тестов пройдено: {{ profileData?.topics.tests_passed }}</p>
+              </div>
+              <div class="right">
+                <p>Процент успешного выполнения</p>
+                <p class="failure">{{ profileData?.topics.success_rate }}%</p>
+              </div>
             </div>
           </div>
+          <button class="expand-btn">развернуть</button>
         </div>
-        <button class="expand-btn">развернуть</button>
       </div>
     </div>
   </div>
