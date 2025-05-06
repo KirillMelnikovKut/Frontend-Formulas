@@ -2,6 +2,7 @@
   <div class="container">
     <main>
       <h1 class="title">Видео</h1>
+
       <div class="categories">
         <button
           v-for="(category, index) in categories"
@@ -18,9 +19,18 @@
           :key="index"
           class="video-card"
         >
-          <div class="video-thumb"></div>
+          <div class="video-thumb">
+            <iframe
+              v-if="video.link"
+              :src="video.link"
+              frameborder="0"
+              allowfullscreen
+              width="100%"
+              height="150"
+            ></iframe>
+          </div>
           <h2 class="video-title">{{ video.title }}</h2>
-          <p class="video-info">Данные о видео</p>
+          <p class="video-info">{{ video.description || 'Без описания' }}</p>
         </div>
       </div>
     </main>
@@ -28,18 +38,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import api from '@/api';
+import { ref, onMounted } from 'vue';
 
 const categories = ref(['Категория', 'Категория', 'Категория', 'Категория']);
-const videos = ref([
-  { title: 'Название видео' },
-  { title: 'Длинное название видео из двух строк' },
-  { title: 'Длинное название видео из двух строк' },
-  { title: 'Название видео' },
-  { title: 'Длинное название видео из двух строк' },
-  { title: 'Название видео' },
-  { title: 'Название видео' },
-]);
+const videos = ref([]);
+
+onMounted(async () => {
+  try {
+    const response = await api.get(`/video/videos`);
+    videos.value = Array.isArray(response.data)
+      ? response.data
+      : response.data.videos || [];
+  } catch (error) {
+    console.error('Ошибка загрузки видео:', error);
+  }
+});
 </script>
 
 <style scoped>
@@ -48,35 +62,6 @@ const videos = ref([
   margin: 0 auto;
   padding: 20px;
   font-family: Arial, sans-serif;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: black;
-  color: white;
-  padding: 15px;
-}
-
-.logo {
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.logo span {
-  color: #4c8bf5;
-}
-
-.nav {
-  display: flex;
-  gap: 20px;
-}
-
-.nav__link {
-  color: white;
-  text-decoration: none;
-  font-size: 18px;
 }
 
 .title {
@@ -114,8 +99,9 @@ const videos = ref([
 .video-thumb {
   width: 100%;
   height: 150px;
-  background: gray;
+  background: #ccc;
   border-radius: 5px;
+  overflow: hidden;
 }
 
 .video-title {
